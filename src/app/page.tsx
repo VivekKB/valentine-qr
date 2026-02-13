@@ -32,27 +32,20 @@ const terminalMessages = [
   { text: "Will you be my Valentine? (Y/N)", delay: 13000, question: true },
 ];
 
-// Placeholder photos - user will replace these
-// Photo positions for messy collage - scattered overlapping layout
-const photoConfigs = [
-  { src: "/photos/1.jpg", top: "5%", left: "8%", rotate: -12, size: 140, zIndex: 1 },
-  { src: "/photos/2.jpg", top: "3%", left: "35%", rotate: 8, size: 160, zIndex: 3 },
-  { src: "/photos/3.jpg", top: "8%", right: "12%", rotate: -5, size: 150, zIndex: 2 },
-  { src: "/photos/4.jpg", top: "20%", left: "15%", rotate: 15, size: 130, zIndex: 4 },
-  { src: "/photos/5.jpg", top: "25%", left: "45%", rotate: -8, size: 170, zIndex: 5 },
-  { src: "/photos/6.jpg", top: "18%", right: "8%", rotate: 10, size: 145, zIndex: 2 },
-  { src: "/photos/7.jpg", top: "38%", left: "5%", rotate: -15, size: 155, zIndex: 6 },
-  { src: "/photos/8.jpg", top: "42%", left: "30%", rotate: 6, size: 135, zIndex: 7 },
-  { src: "/photos/9.jpg", top: "35%", right: "20%", rotate: -10, size: 165, zIndex: 4 },
-  { src: "/photos/10.jpg", top: "55%", left: "12%", rotate: 12, size: 150, zIndex: 8 },
-  { src: "/photos/11.jpg", top: "52%", left: "40%", rotate: -6, size: 140, zIndex: 9 },
-  { src: "/photos/12.jpg", top: "50%", right: "10%", rotate: 8, size: 160, zIndex: 5 },
-  { src: "/photos/13.jpg", top: "68%", left: "6%", rotate: -8, size: 145, zIndex: 10 },
-  { src: "/photos/14.jpg", top: "70%", left: "32%", rotate: 14, size: 155, zIndex: 11 },
-  { src: "/photos/15.jpg", top: "65%", right: "15%", rotate: -12, size: 135, zIndex: 6 },
-  { src: "/photos/16.jpg", top: "82%", left: "18%", rotate: 5, size: 150, zIndex: 12 },
-  { src: "/photos/17.jpg", top: "78%", left: "50%", rotate: -10, size: 165, zIndex: 13 },
-  { src: "/photos/18.jpg", top: "80%", right: "8%", rotate: 7, size: 140, zIndex: 8 },
+// Memory cards with photos and captions - update these with your memories!
+const memoryCards = [
+  { src: "/photos/1.jpg", caption: "First trip together ✈️" },
+  { src: "/photos/2.jpg", caption: "That coffee order you love ☕" },
+  { src: "/photos/3.jpg", caption: "The laugh I fell for 😊" },
+  { src: "/photos/4.jpg", caption: "Our secret spot 🌅" },
+  { src: "/photos/5.jpg", caption: "That fight we laughed about 😅" },
+  { src: "/photos/6.jpg", caption: "Your favorite photo of us 📸" },
+  { src: "/photos/7.jpg", caption: "The day I knew 💕" },
+  { src: "/photos/8.jpg", caption: "Late night talks 🌙" },
+  { src: "/photos/9.jpg", caption: "Dancing in the kitchen 💃" },
+  { src: "/photos/10.jpg", caption: "That surprise you planned 🎁" },
+  { src: "/photos/11.jpg", caption: "Our comfort food date 🍝" },
+  { src: "/photos/12.jpg", caption: "Getting lost together 🗺️" },
 ];
 
 // Glitch particle type
@@ -76,7 +69,7 @@ export default function Home() {
   const [showButtons, setShowButtons] = useState(false);
   const [noButtonAttempts, setNoButtonAttempts] = useState(0);
   const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
-  const [visiblePhotos, setVisiblePhotos] = useState<number[]>([]);
+  const [revealedMemories, setRevealedMemories] = useState<number[]>([]);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -207,17 +200,18 @@ export default function Home() {
   // Handle Yes click
   const handleYesClick = () => {
     setStep("photos");
-    
-    // Reveal photos one by one with slight randomness in timing
-    photoConfigs.forEach((_, index) => {
-      setTimeout(() => {
-        setVisiblePhotos(prev => [...prev, index]);
-        
-        // Show final message after all photos
-        if (index === photoConfigs.length - 1) {
-          setTimeout(() => setShowFinalMessage(true), 800);
-        }
-      }, index * 200 + Math.random() * 100);
+  };
+
+  // Handle memory card tap
+  const handleMemoryReveal = (index: number) => {
+    if (revealedMemories.includes(index)) return;
+    setRevealedMemories(prev => {
+      const newRevealed = [...prev, index];
+      // Show final message when all memories are revealed
+      if (newRevealed.length === memoryCards.length) {
+        setTimeout(() => setShowFinalMessage(true), 600);
+      }
+      return newRevealed;
     });
   };
 
@@ -618,114 +612,226 @@ export default function Home() {
       <AnimatePresence>
         {step === "photos" && (
           <motion.div
-            className="fixed inset-0 overflow-hidden bg-gradient-to-br from-pink-200 via-rose-100 to-pink-300"
+            className="fixed inset-0 overflow-hidden bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            {/* Scattered messy collage */}
-            {photoConfigs.map((config, index) => (
-              <AnimatePresence key={index}>
-                {visiblePhotos.includes(index) && (
+            {/* Twinkling stars background */}
+            {[...Array(50)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute h-1 w-1 rounded-full bg-white"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  opacity: [0.2, 1, 0.2],
+                  scale: [0.8, 1.2, 0.8],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
+
+            {/* Intro message */}
+            {revealedMemories.length === 0 && (
+              <motion.div
+                className="absolute left-0 right-0 top-6 z-20 px-4 text-center"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="text-lg font-medium text-purple-200">
+                  Our memories are written in the stars... ✨
+                </p>
+                <p className="mt-1 text-sm text-purple-300/80">
+                  Tap each star to reveal them 💫
+                </p>
+              </motion.div>
+            )}
+
+            {/* Progress indicator */}
+            {revealedMemories.length > 0 && revealedMemories.length < memoryCards.length && (
+              <motion.div
+                className="absolute left-0 right-0 top-4 z-20 px-4 text-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <p className="text-sm text-purple-300">
+                  {revealedMemories.length} / {memoryCards.length} memories discovered 🌟
+                </p>
+              </motion.div>
+            )}
+
+            {/* Floating constellation photos */}
+            <div className="absolute inset-0">
+              {memoryCards.map((card, index) => {
+                const isRevealed = revealedMemories.includes(index);
+                // Scatter positions for constellation effect
+                const positions = [
+                  { top: "8%", left: "5%", size: "100px" },
+                  { top: "15%", left: "65%", size: "90px" },
+                  { top: "25%", left: "35%", size: "110px" },
+                  { top: "12%", right: "8%", size: "85px" },
+                  { top: "40%", left: "8%", size: "95px" },
+                  { top: "38%", right: "12%", size: "105px" },
+                  { top: "55%", left: "25%", size: "88px" },
+                  { top: "52%", right: "5%", size: "92px" },
+                  { top: "68%", left: "5%", size: "98px" },
+                  { top: "65%", left: "55%", size: "90px" },
+                  { top: "80%", left: "30%", size: "85px" },
+                  { top: "78%", right: "15%", size: "95px" },
+                ];
+                const pos = positions[index] || positions[0];
+                
+                return (
                   <motion.div
-                    className="absolute overflow-hidden rounded-lg shadow-2xl border-4 border-white"
+                    key={index}
+                    className="absolute cursor-pointer"
                     style={{
-                      top: config.top,
-                      left: config.left,
-                      right: config.right,
-                      width: config.size,
-                      height: config.size,
-                      zIndex: config.zIndex,
+                      top: pos.top,
+                      left: pos.left,
+                      right: pos.right,
+                      width: pos.size,
+                      height: pos.size,
                     }}
-                    initial={{ 
-                      scale: 0, 
-                      rotate: config.rotate - 30, 
-                      opacity: 0,
-                      y: -100
-                    }}
+                    initial={{ opacity: 0, scale: 0 }}
                     animate={{ 
-                      scale: 1, 
-                      rotate: config.rotate, 
-                      opacity: 1,
-                      y: 0
+                      opacity: 1, 
+                      scale: 1,
+                      y: [0, -5, 0],
                     }}
                     transition={{
-                      type: "spring",
-                      damping: 12,
-                      stiffness: 100,
+                      opacity: { delay: index * 0.1, duration: 0.5 },
+                      scale: { delay: index * 0.1, duration: 0.5, type: "spring" },
+                      y: { repeat: Infinity, duration: 3 + index * 0.2, ease: "easeInOut" },
                     }}
-                    whileHover={{ 
-                      scale: 1.15, 
-                      zIndex: 50,
-                      rotate: 0,
-                      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
-                    }}
+                    whileHover={{ scale: 1.15 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleMemoryReveal(index)}
                   >
-                    <Image
-                      src={config.src}
-                      alt={`Memory ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="200px"
-                    />
-                    {/* Heart pop effect on appear */}
+                    {/* Glow effect */}
                     <motion.div
-                      className="absolute inset-0 flex items-center justify-center bg-pink-500/30"
-                      initial={{ opacity: 1 }}
-                      animate={{ opacity: 0 }}
-                      transition={{ delay: 0.3, duration: 0.4 }}
-                    >
-                      <span className="text-4xl">💕</span>
-                    </motion.div>
+                      className={`absolute -inset-2 rounded-full ${
+                        isRevealed
+                          ? "bg-purple-400/40 blur-xl"
+                          : "bg-indigo-400/30 blur-lg"
+                      }`}
+                      animate={!isRevealed ? {
+                        opacity: [0.3, 0.6, 0.3],
+                        scale: [1, 1.1, 1],
+                      } : {}}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    />
+                    
+                    {/* Photo container */}
+                    <div className={`relative h-full w-full overflow-hidden rounded-full border-2 ${
+                      isRevealed 
+                        ? "border-purple-300/60" 
+                        : "border-indigo-400/40"
+                    }`}>
+                      <Image
+                        src={card.src}
+                        alt={`Memory ${index + 1}`}
+                        fill
+                        className={`object-cover transition-all duration-700 ${
+                          isRevealed ? "blur-0 brightness-100" : "blur-md brightness-50"
+                        }`}
+                        sizes="120px"
+                      />
+                      
+                      {/* Star overlay when not revealed */}
+                      <AnimatePresence>
+                        {!isRevealed && (
+                          <motion.div
+                            className="absolute inset-0 flex items-center justify-center bg-indigo-900/40"
+                            exit={{ opacity: 0, scale: 1.5 }}
+                            transition={{ duration: 0.4 }}
+                          >
+                            <motion.span 
+                              className="text-2xl"
+                              animate={{ rotate: [0, 180, 360] }}
+                              transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+                            >
+                              ⭐
+                            </motion.span>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Caption on reveal */}
+                    <AnimatePresence>
+                      {isRevealed && (
+                        <motion.div
+                          className="absolute -bottom-8 left-1/2 w-32 -translate-x-1/2 text-center"
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 }}
+                        >
+                          <p className="text-xs font-medium text-purple-200 drop-shadow-lg">
+                            {card.caption}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
-                )}
-              </AnimatePresence>
-            ))}
+                );
+              })}
+            </div>
 
             {/* Final message */}
             <AnimatePresence>
               {showFinalMessage && (
                 <motion.div
-                  className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                  className="fixed inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
                   <motion.div
-                    className="mx-4 rounded-3xl bg-white/95 p-8 text-center shadow-2xl"
+                    className="mx-4 rounded-3xl border border-purple-400/30 bg-gradient-to-b from-indigo-950/95 to-purple-950/95 p-8 text-center shadow-2xl"
                     initial={{ scale: 0.5, y: 50 }}
                     animate={{ scale: 1, y: 0 }}
                     transition={{ type: "spring", damping: 12 }}
                   >
                     <motion.div
                       className="mb-4 text-6xl"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ repeat: Infinity, duration: 1.5 }}
+                      animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
                     >
-                      💕
+                      🌟
                     </motion.div>
-                    <h1 className="mb-2 text-3xl font-bold text-rose-600">
+                    <h1 className="mb-2 text-3xl font-bold text-purple-200">
                       Happy Valentine&apos;s Day!
                     </h1>
-                    <p className="text-lg text-rose-500">
-                      You mean the world to me 💝
+                    <p className="text-lg text-purple-300">
+                      You are my brightest star 💫
                     </p>
                     <motion.div
-                      className="mt-6 flex justify-center gap-2"
+                      className="mt-6 flex justify-center gap-3"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1 }}
                     >
-                      {["💕", "💖", "💗", "💓", "💝"].map((heart, i) => (
+                      {["⭐", "✨", "🌟", "💫", "✨"].map((star, i) => (
                         <motion.span
                           key={i}
                           className="text-2xl"
-                          animate={{ y: [0, -10, 0] }}
+                          animate={{ 
+                            y: [0, -8, 0],
+                            opacity: [0.6, 1, 0.6],
+                          }}
                           transition={{
                             repeat: Infinity,
-                            duration: 1,
-                            delay: i * 0.1,
+                            duration: 1.5,
+                            delay: i * 0.15,
                           }}
                         >
-                          {heart}
+                          {star}
                         </motion.span>
                       ))}
                     </motion.div>
