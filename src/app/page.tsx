@@ -34,18 +34,19 @@ const terminalMessages = [
 
 // Memory cards with photos and captions - update these with your memories!
 const memoryCards = [
-  { src: "/photos/1.jpg", caption: "First trip together ✈️" },
-  { src: "/photos/2.jpg", caption: "That coffee order you love ☕" },
-  { src: "/photos/3.jpg", caption: "The laugh I fell for 😊" },
-  { src: "/photos/4.jpg", caption: "Our secret spot 🌅" },
-  { src: "/photos/5.jpg", caption: "That fight we laughed about 😅" },
-  { src: "/photos/6.jpg", caption: "Your favorite photo of us 📸" },
-  { src: "/photos/7.jpg", caption: "The day I knew 💕" },
+  { src: "/photos/1.jpg", caption: "First trip with the cuties 🐕" },
+  { src: "/photos/2.jpg", caption: "First snow together ❄️" },
+  { src: "/photos/3.jpg", caption: "The saree girl I fell for 😊" },
+  { src: "/photos/4.jpg", caption: "First trek together 🥾" },
+  { src: "/photos/5.jpg", caption: "Our first international trip ✈️" },
+  { src: "/photos/6.jpg", caption: "My favorite photo of us 📸" },
+  { src: "/photos/7.jpg", caption: "Our arcade madness 🕹️" },
   { src: "/photos/8.jpg", caption: "Late night talks 🌙" },
-  { src: "/photos/9.jpg", caption: "Dancing in the kitchen 💃" },
-  { src: "/photos/10.jpg", caption: "That surprise you planned 🎁" },
-  { src: "/photos/11.jpg", caption: "Our comfort food date 🍝" },
+  { src: "/photos/9.jpg", caption: "Dancing through our bachelors 💃" },
+  { src: "/photos/10.jpg", caption: "That bad trip turned into good photos 📷" },
+  { src: "/photos/11.jpg", caption: "Your best hairstyle 💇‍♀️" },
   { src: "/photos/12.jpg", caption: "Getting lost together 🗺️" },
+  { src: "/photos/13.jpg", caption: "Our first ocean adventure 🌊" },
 ];
 
 // Glitch particle type
@@ -71,7 +72,19 @@ export default function Home() {
   const [noButtonPosition, setNoButtonPosition] = useState({ x: 0, y: 0 });
   const [revealedMemories, setRevealedMemories] = useState<number[]>([]);
   const [showFinalMessage, setShowFinalMessage] = useState(false);
+  const [starPositions, setStarPositions] = useState<{left: number, top: number, duration: number, delay: number}[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Generate star positions on client only to avoid hydration mismatch
+  useEffect(() => {
+    const stars = [...Array(50)].map(() => ({
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: 2 + Math.random() * 2,
+      delay: Math.random() * 2,
+    }));
+    setStarPositions(stars);
+  }, []);
 
   // Initialize glitch particles
   useEffect(() => {
@@ -617,22 +630,22 @@ export default function Home() {
             animate={{ opacity: 1 }}
           >
             {/* Twinkling stars background */}
-            {[...Array(50)].map((_, i) => (
+            {starPositions.map((star, i) => (
               <motion.div
                 key={i}
                 className="absolute h-1 w-1 rounded-full bg-white"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${star.left}%`,
+                  top: `${star.top}%`,
                 }}
                 animate={{
                   opacity: [0.2, 1, 0.2],
                   scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: 2 + Math.random() * 2,
+                  duration: star.duration,
                   repeat: Infinity,
-                  delay: Math.random() * 2,
+                  delay: star.delay,
                 }}
               />
             ))}
@@ -685,6 +698,7 @@ export default function Home() {
                   { top: "65%", left: "55%", size: "90px" },
                   { top: "80%", left: "30%", size: "85px" },
                   { top: "78%", right: "15%", size: "95px" },
+                  { top: "48%", left: "45%", size: "100px" },
                 ];
                 const pos = positions[index] || positions[0];
                 
@@ -741,7 +755,8 @@ export default function Home() {
                         className={`object-cover transition-all duration-700 ${
                           isRevealed ? "blur-0 brightness-100" : "blur-md brightness-50"
                         }`}
-                        sizes="120px"
+                        sizes="(max-width: 768px) 150px, 200px"
+                        quality={90}
                       />
                       
                       {/* Star overlay when not revealed */}
