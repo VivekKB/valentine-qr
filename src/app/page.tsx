@@ -751,22 +751,29 @@ export default function Home() {
                         ? "border-purple-300/60" 
                         : "border-indigo-400/40"
                     }`}>
-                      <Image
-                        src={card.src}
-                        alt={`Memory ${index + 1}`}
-                        fill
-                        className={`object-cover transition-all duration-700 ${
-                          isRevealed ? "blur-0 brightness-100" : "blur-md brightness-50"
-                        }`}
-                        sizes="(max-width: 768px) 150px, 200px"
-                        quality={90}
-                      />
+                      {/* Only show image when revealed to avoid square blur edges */}
+                      {isRevealed ? (
+                        <Image
+                          src={card.src}
+                          alt={`Memory ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 150px, 200px"
+                          onError={(e) => {
+                            // Hide broken images
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        // Purple placeholder when not revealed
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-800/80 to-purple-900/80" />
+                      )}
                       
                       {/* Star overlay when not revealed */}
                       <AnimatePresence>
                         {!isRevealed && (
                           <motion.div
-                            className="absolute inset-0 flex items-center justify-center bg-indigo-900/40"
+                            className="absolute inset-0 flex items-center justify-center"
                             exit={{ opacity: 0, scale: 1.5 }}
                             transition={{ duration: 0.4 }}
                           >
