@@ -4,6 +4,9 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+// Base path for GitHub Pages deployment
+const basePath = process.env.NODE_ENV === "production" ? "/valentine-qr" : "";
+
 // Message fragments to collect
 const messageFragments = [
   { id: 1, word: "Will" },
@@ -34,19 +37,19 @@ const terminalMessages = [
 
 // Memory cards with photos and captions - update these with your memories!
 const memoryCards = [
-  { src: "/photos/1.jpg", caption: "First trip with the cuties 🐕" },
-  { src: "/photos/2.jpg", caption: "First snow together ❄️" },
-  { src: "/photos/3.jpg", caption: "The saree girl I fell for 😊" },
-  { src: "/photos/4.jpg", caption: "First trek together 🥾" },
-  { src: "/photos/5.jpg", caption: "Our first international trip ✈️" },
-  { src: "/photos/6.jpg", caption: "My favorite photo of us 📸" },
-  { src: "/photos/7.jpg", caption: "Our arcade madness 🕹️" },
-  { src: "/photos/8.jpg", caption: "Late night talks 🌙" },
-  { src: "/photos/9.jpg", caption: "Dancing through our bachelors 💃" },
-  { src: "/photos/10.jpg", caption: "That bad trip turned into good photos 📷" },
-  { src: "/photos/11.jpg", caption: "Your best hairstyle 💇‍♀️" },
-  { src: "/photos/12.jpg", caption: "Getting lost together 🗺️" },
-  { src: "/photos/13.jpg", caption: "Our first ocean adventure 🌊" },
+  { src: `${basePath}/photos/1.jpg`, caption: "First trip with the cuties 🐕" },
+  { src: `${basePath}/photos/2.jpg`, caption: "First snow together ❄️" },
+  { src: `${basePath}/photos/3.jpg`, caption: "The saree girl I fell for 😊" },
+  { src: `${basePath}/photos/4.jpg`, caption: "First trek together 🥾" },
+  { src: `${basePath}/photos/5.jpg`, caption: "Our first international trip ✈️" },
+  { src: `${basePath}/photos/6.jpg`, caption: "My favorite photo of us 📸" },
+  { src: `${basePath}/photos/7.jpg`, caption: "Our arcade madness 🕹️" },
+  { src: `${basePath}/photos/8.jpg`, caption: "Late night talks 🌙" },
+  { src: `${basePath}/photos/9.jpg`, caption: "Dancing through our bachelors 💃" },
+  { src: `${basePath}/photos/10.jpg`, caption: "That bad trip turned into good photos 📷" },
+  { src: `${basePath}/photos/11.jpg`, caption: "Your best hairstyle 💇‍♀️" },
+  { src: `${basePath}/photos/12.jpg`, caption: "Getting lost together 🗺️" },
+  { src: `${basePath}/photos/13.jpg`, caption: "Our first ocean adventure 🌊" },
 ];
 
 // Glitch particle type
